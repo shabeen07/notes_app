@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/utils/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
@@ -9,14 +10,47 @@ import 'note_details.dart';
 class NotesList extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return NoteListState();
+    return _NoteListState();
   }
 }
 
-class NoteListState extends State<NotesList> {
+class _NoteListState extends State<NotesList> {
   DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Note> notesList;
   int notesCount = 0;
+  SearchBar _searchBar;
+  final GlobalKey<ScaffoldState> _globalKey=new GlobalKey<ScaffoldState>();
+
+  AppBar buildAppBar(BuildContext context){
+    return new AppBar(
+      title: new Text('i-Notes'),
+      actions: [_searchBar.getSearchAction(context)],
+    );
+  }
+
+  void onSubmitted(String searchText){
+    setState(() {
+      _globalKey.currentState
+          .showSnackBar(new SnackBar(content: new Text('you wrote $searchText')));
+    });
+  }
+
+  _NoteListState(){
+    _searchBar=new SearchBar(
+      inBar: false,
+      buildDefaultAppBar: buildAppBar,
+      setState: setState,
+      onSubmitted: onSubmitted,
+      hintText:'Search notes',
+      onCleared: (){
+        print('cleared');
+      },
+      onClosed: (){
+        print('closed');
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (notesList == null) {
@@ -25,9 +59,7 @@ class NoteListState extends State<NotesList> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Notes'),
-      ),
+      appBar: _searchBar.build(context),
       body: getNotesList(),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add a Note',
@@ -87,14 +119,14 @@ class NoteListState extends State<NotesList> {
   Color getPriorityColor(int priority) {
     switch (priority) {
       case 1:
-        return Colors.red;
+        return Colors.black;
         break;
       case 2:
-        return Colors.cyan;
+        return Colors.amber;
         break;
 
       default:
-        return Colors.cyan;
+        return Colors.amber;
     }
   }
 

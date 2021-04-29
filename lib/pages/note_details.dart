@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/utils/database_helper.dart';
+import 'package:path/path.dart';
 
 class NoteDetail extends StatefulWidget {
   final String appBarTitle;
@@ -67,6 +68,8 @@ class NoteDetailState extends State<NoteDetail> {
                 Padding(
                     padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
                     child: TextField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 50,
                       controller: descTextController,
                       style: TextStyle(fontStyle: FontStyle.normal),
                       onChanged: (value) {
@@ -74,35 +77,10 @@ class NoteDetailState extends State<NoteDetail> {
                         updateDescription();
                       },
                       decoration: InputDecoration(
-                          labelText: 'Description',
+                          labelText: 'Description!',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(4.0))),
                     )),
-
-                ListTile(
-                  title: DropdownButton(
-                      items: _proirities.map((String dropDownItem) {
-                        return DropdownMenuItem<String>(
-                          value: dropDownItem,
-                          child: Text(
-                            dropDownItem,
-                            style: TextStyle(
-                                fontStyle: FontStyle.normal,
-                                color: Colors.black),
-                          ),
-                        );
-                      }).toList(),
-                      style: TextStyle(fontStyle: FontStyle.normal),
-                      value: getPriorityAsString(
-                          note.priority), // get Priority As String
-                      onChanged: (valueSelected) {
-                        setState(() {
-                          debugPrint('User Selected $valueSelected');
-                          updatePriorityAsInt(
-                              valueSelected); //  update note.priority By Selecetd Value
-                        });
-                      }),
-                ),
 
                 Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 10),
