@@ -17,19 +17,19 @@ class DatabaseHelper {
   factory DatabaseHelper() {
     if (_databaseHelper == null) {
       _databaseHelper = DatabaseHelper
-          ._createInstance(); //This extecute only once . Singleton Object
+          ._createInstance(); //This execute only once . Singleton Object
     }
     return _databaseHelper;
   }
 
   Future<Database> get database async {
     if (_database == null) {
-      _database = await intitializeDatabase();
+      _database = await initializeDatabase();
     }
     return _database;
   }
 
-  Future<Database> intitializeDatabase() async {
+  Future<Database> initializeDatabase() async {
     // get Directory path for both Android and IOS
     Directory directory = await getApplicationDocumentsDirectory();
 
@@ -99,6 +99,28 @@ class DatabaseHelper {
     // loop to create  List of Note
     for (int i = 0; i < count; i++) {
       notesList.add(Note.fromMapObject(noteMapList[i]));
+    }
+
+    return notesList;
+  }
+  // search notes by title or description
+  Future<List<Map<String, dynamic>>> getSearchNotesMapList(String searchText) async{
+  Database db = await this.database;
+
+  var result =
+  await db.rawQuery("SELECT * FROM $noteTable where ($colTitle LIKE %"+searchText+"% or $colDesc LIKE %"+searchText+"% ) order by $colPriority ASC");
+  return result;
+  }
+
+  // get search notes list
+  Future<List<Note>> getSearchNoteList(String searchText) async{
+    var searchNotesList= await getSearchNotesMapList(searchText);
+    int count =searchNotesList.length;
+    List<Note> notesList = List<Note>();
+
+    // loop to create  List of Note
+    for (int i = 0; i < count; i++) {
+      notesList.add(Note.fromMapObject(searchNotesList[i]));
     }
 
     return notesList;

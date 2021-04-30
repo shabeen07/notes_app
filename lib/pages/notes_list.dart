@@ -23,7 +23,7 @@ class _NoteListState extends State<NotesList> {
 
   AppBar buildAppBar(BuildContext context){
     return new AppBar(
-      title: new Text('i-Notes'),
+      title: new Text('iNotes'),
       actions: [_searchBar.getSearchAction(context)],
     );
   }
@@ -60,6 +60,7 @@ class _NoteListState extends State<NotesList> {
 
     return Scaffold(
       appBar: _searchBar.build(context),
+      key: _globalKey,
       body: getNotesList(),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add a Note',
@@ -157,12 +158,12 @@ class _NoteListState extends State<NotesList> {
   // display a message
   void _showMessage(String msg) {
     final snackBar = SnackBar(content: Text(msg));
-    Scaffold.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 // update notes view
   void _updateListView() {
-    final Future<Database> dbFuture = _databaseHelper.intitializeDatabase();
+    final Future<Database> dbFuture = _databaseHelper.initializeDatabase();
     dbFuture.then((database) {
       var noteListFuture = _databaseHelper.getNotesList();
       noteListFuture.then((noteList) {

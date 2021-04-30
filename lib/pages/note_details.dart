@@ -21,7 +21,7 @@ class NoteDetailState extends State<NoteDetail> {
   String appBarTitle;
   Note note;
   NoteDetailState(this.note, this.appBarTitle);
-  static var _proirities = ['High', 'Low'];
+  static var _priorities = ['High', 'Low'];
   TextEditingController titleTextController = TextEditingController();
   TextEditingController descTextController = TextEditingController();
   @override
@@ -69,7 +69,7 @@ class NoteDetailState extends State<NoteDetail> {
                     padding: EdgeInsets.only(top: 14.0, bottom: 14.0),
                     child: TextField(
                       keyboardType: TextInputType.multiline,
-                      maxLines: 50,
+                      maxLines: 20,
                       controller: descTextController,
                       style: TextStyle(fontStyle: FontStyle.normal),
                       onChanged: (value) {
@@ -87,9 +87,8 @@ class NoteDetailState extends State<NoteDetail> {
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                        child: RaisedButton(
-                          color: Theme.of(context).primaryColorDark,
-                          textColor: Theme.of(context).primaryColorLight,
+                        flex: 1,
+                        child: ElevatedButton(
                           child: Text(
                             'Save',
                             textScaleFactor: 1.5,
@@ -103,12 +102,11 @@ class NoteDetailState extends State<NoteDetail> {
                         ),
                       ),
                       Container(
-                        width: 6.0,
+                        width: 20.0,
                       ),
                       Expanded(
-                        child: RaisedButton(
-                          color: Theme.of(context).primaryColorDark,
-                          textColor: Theme.of(context).primaryColorLight,
+                        flex: 1,
+                        child: ElevatedButton(
                           child: Text(
                             'Delete',
                             textScaleFactor: 1.5,
@@ -131,7 +129,7 @@ class NoteDetailState extends State<NoteDetail> {
   }
 
   void navigateToPreviousPage() {
-    Navigator.pop(context,true);
+    Navigator.pop(this.context,true);
   }
 
   // convert the String priority in to Integer before saving it in Database
@@ -152,15 +150,15 @@ class NoteDetailState extends State<NoteDetail> {
   String getPriorityAsString(int value) {
     switch (value) {
       case 1:
-        return _proirities[0]; // ' High'
+        return _priorities[0]; // ' High'
         break;
 
       case 2:
-        return _proirities[1]; // 'Low'
+        return _priorities[1]; // 'Low'
         break;
 
       default:
-        return _proirities[1];
+        return _priorities[1];
     }
   }
 
@@ -169,7 +167,7 @@ class NoteDetailState extends State<NoteDetail> {
     note.title = titleTextController.text;
   }
 
-  // upddte description in user input
+  // update description in user input
   void updateDescription() {
     note.description = descTextController.text;
   }
@@ -181,7 +179,7 @@ class NoteDetailState extends State<NoteDetail> {
     note.date = DateFormat.yMMMd().format(DateTime.now());
     int result;
     if (note.id != null) {
-      // update opertion
+      // update operation
       result = await _dbHelper.updateNote(note);
     } else {
       // insert operation
@@ -203,7 +201,7 @@ class NoteDetailState extends State<NoteDetail> {
       title: Text(status),
       content: Text(msg),
     );
-    showDialog(context: context, builder: (_) => alertDialog);
+    showDialog(context: this.context, builder: (_) => alertDialog);
   }
 
 // Delete note
